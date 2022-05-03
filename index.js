@@ -35,7 +35,7 @@ const requestXHR = function () {
 
 const dbInsertIntoPost = function () {
   // with placeholder
-  return new Promise((resolve, reject) => {
+//   return new Promise((resolve, reject) => {
     adapterToDBSchema()
     .then(items => {
         connection.query(
@@ -43,16 +43,17 @@ const dbInsertIntoPost = function () {
             [items.map(item => [item.postId, item.id, item.name])],
             (error, results) => {
         
-                if(error) reject(error);
+                if(error) throw (error);
                 
-                resolve('Resultados: '+results);
+                console.log('Resultados: '+JSON.stringify(results) );
+                exit();
         
             }
         );
     })
     .catch(err => console.log(err));
     
-  })
+//   })
 }
 
 const postModel = {
@@ -86,6 +87,4 @@ const adapterToDBSchema = function () {
     });
 }
 
-dbInsertIntoPost()
-.then(res => { console.log(JSON.parse(JSON.stringify(res))) })
-.catch(err => console.log(err));
+dbInsertIntoPost();
