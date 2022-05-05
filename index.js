@@ -50,7 +50,7 @@ const adapterToDBSchema = function () {
                 post.name = result.name;
                 posts.push(post);
                 cont++;
-                console.log(cont+" posts adapted.");
+                console.log(cont+" posts adapted to db schema.");
 
             });
             
@@ -75,7 +75,7 @@ const dbInsertIntoPost = function () {
         
                 if(error) console.log (error);
                 
-                console.log('Resultados: '+JSON.stringify(results) );
+                resolve('\nResultados: '+JSON.stringify(results)+'\n' );
                 resultados = resultados + results;
                 // exit();
         
@@ -150,6 +150,7 @@ const callDbInsertInterval = function (){
                     callDbInsertInterval();
 
                     clearTimeout(intervalId);
+
                     return;
 
                 } );
@@ -161,6 +162,7 @@ const callDbInsertInterval = function (){
                 callDbInsertInterval();
 
                 clearTimeout(intervalId);
+
                 return;
 
             }
