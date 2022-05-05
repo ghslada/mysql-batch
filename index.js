@@ -34,6 +34,12 @@ const requestXHR = function () {
 }
 
 
+const postModel = {
+    "postId": '',
+    "id": '',
+    "name": ''
+}
+
 
 const adapterToDBSchema = function () {
     return new Promise((resolve, reject) => {
@@ -98,12 +104,6 @@ const dbInsertIntoPost = function () {
     .catch(err => reject(err));
     
   })
-}
-
-const postModel = {
-    "postId": '',
-    "id": '',
-    "name": ''
 }
 
 const callDbInsertInterval = function (){
