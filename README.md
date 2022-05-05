@@ -1,1 +1,1 @@
-# Simple batch insert consuming an API and inserting it`s data into a MySQL table;
+# Simple batch upsert consuming an API and inserting it`s data into a MySQL table;

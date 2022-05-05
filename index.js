@@ -33,34 +33,7 @@ const requestXHR = function () {
     });
 }
 
-const dbInsertIntoPost = function () {
-  // with placeholder
-//   return new Promise((resolve, reject) => {
-    adapterToDBSchema()
-    .then(items => {
-        connection.query(
-            'INSERT INTO posts (post_id, id, name) VALUES ?',
-            [items.map(item => [item.postId, item.id, item.name])],
-            (error, results) => {
-        
-                if(error) throw (error);
-                
-                console.log('Resultados: '+JSON.stringify(results) );
-                exit();
-        
-            }
-        );
-    })
-    .catch(err => console.log(err));
-    
-//   })
-}
 
-const postModel = {
-    "postId": '',
-    "id": '',
-    "name": ''
-}
 
 const adapterToDBSchema = function () {
     return new Promise((resolve, reject) => {
@@ -87,4 +60,118 @@ const adapterToDBSchema = function () {
     });
 }
 
-dbInsertIntoPost();
+
+
+const dbInsertIntoPost = function () {
+  // with placeholder
+  return new Promise((resolve, reject) => {
+    adapterToDBSchema()
+    .then(items => {
+        let resultados = 0;
+        connection.query(
+            'INSERT INTO posts (post_id, id, name) VALUES ? as posts_i ON DUPLICATE KEY UPDATE post_id=posts_i.post_id, name=posts_i.name',
+            [ items.map( item => [item.postId, item.id, item.name] ) ],
+            (error, results) => {
+        
+                if(error) console.log (error);
+                
+                console.log('Resultados: '+JSON.stringify(results) );
+                resultados = resultados + results;
+                // exit();
+        
+            }
+        );
+        // connection.query(
+        //     'UPDATE posts SET post_id=VALUES(post_id), name=name WHERE i',
+        //     [ items.map( item => [item.postId, item.id, item.name] ) ],
+        //     (error, results) => {
+        
+        //         if(error) reject (error);
+
+        //         resultados = resultados + results;
+        //         resolve('Resultados: '+JSON.stringify(resultados) );
+        //         // exit();
+        
+        //     }
+        // );
+    })
+    .catch(err => reject(err));
+    
+  })
+}
+
+const postModel = {
+    "postId": '',
+    "id": '',
+    "name": ''
+}
+
+const callDbInsertInterval = function (){
+
+
+         
+        setTimeout(() => {
+
+            try {
+
+                dbInsertIntoPost()
+                .then( res => console.log(res) )
+                .catch( err => {
+
+                    console.log(err);
+
+                    // callDbInsertInterval();
+
+                    // clearTimeout(intervalId);
+                } );
+
+            } catch (error) {
+            
+                console.log(error);
+
+                // callDbInsertInterval();
+        
+                // clearTimeout(intervalId);
+        
+            }
+
+        }, 1000);
+
+        const intervalId = setInterval(() => {
+
+            try {
+
+                dbInsertIntoPost()
+                .then( res => console.log(res) )
+                .catch( err => {
+
+                    console.log(err);
+
+                    callDbInsertInterval();
+
+                    clearTimeout(intervalId);
+                    return;
+
+                } );
+
+            } catch (error) {
+            
+                console.log(error);
+
+                callDbInsertInterval();
+
+                clearTimeout(intervalId);
+                return;
+
+            }
+
+        }, 7000);
+
+
+
+
+}
+
+callDbInsertInterval();
+
+
